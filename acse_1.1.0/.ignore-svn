@@ -1,0 +1,7 @@
+*.d
+*.tab.c
+*.tab.h
+*.yy.c
+*.asm
+*.cfg
+*.out
