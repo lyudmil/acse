@@ -508,6 +508,9 @@ exp: NUMBER      { $$ = create_expression ($1, IMMEDIATE); }
                            /* free the memory associated with the IDENTIFIER */
                            free($2);
    }
+   | IDENTIFIER ASSIGN exp {
+                           $$ = create_expression($3.value, REGISTER);
+   }
    | exp AND_OP exp     {
                            $$ = handle_bin_numeric_op(program, $1, $3, ANDB);
    }
