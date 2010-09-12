@@ -609,9 +609,9 @@ static const yytype_uint16 yyrline[] =
      220,   233,   234,   238,   239,   244,   245,   246,   247,   250,
      251,   252,   253,   256,   257,   260,   277,   309,   315,   314,
      334,   340,   333,   354,   363,   353,   390,   389,   411,   418,
-     438,   457,   458,   471,   484,   489,   511,   514,   517,   520,
-     523,   526,   529,   532,   535,   538,   541,   544,   547,   550,
-     551,   552,   553,   554,   555
+     438,   457,   458,   471,   484,   489,   511,   524,   527,   530,
+     533,   536,   539,   542,   545,   548,   551,   554,   557,   560,
+     561,   562,   563,   564,   565
 };
 #endif
 
@@ -2109,121 +2109,131 @@ yyreduce:
   case 46:
 #line 511 "Acse.y"
     {
-                           (yyval.expr) = create_expression((yyvsp[(3) - (3)].expr).value, REGISTER);
+	     				  int location;
+					      t_axe_instruction *instr;
+					      location = get_symbol_location(program, (yyvsp[(1) - (3)].svalue), 0);
+
+					      if ((yyvsp[(3) - (3)].expr).expression_type == IMMEDIATE)
+					         gen_addi_instruction(program, location, REG_0, (yyvsp[(3) - (3)].expr).value);
+					      else
+						     gen_add_instruction(program, location, REG_0, (yyvsp[(3) - (3)].expr).value, CG_DIRECT_ALL);
+
+					      free((yyvsp[(1) - (3)].svalue));
+                          (yyval.expr) = create_expression((yyvsp[(3) - (3)].expr).value, REGISTER);
    ;}
     break;
 
   case 47:
-#line 514 "Acse.y"
+#line 524 "Acse.y"
     {
                            (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), ANDB);
    ;}
     break;
 
   case 48:
-#line 517 "Acse.y"
+#line 527 "Acse.y"
     {
                            (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), ORB);
    ;}
     break;
 
   case 49:
-#line 520 "Acse.y"
+#line 530 "Acse.y"
     {
                            (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), ADD);
    ;}
     break;
 
   case 50:
-#line 523 "Acse.y"
+#line 533 "Acse.y"
     {
                            (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), SUB);
    ;}
     break;
 
   case 51:
-#line 526 "Acse.y"
+#line 536 "Acse.y"
     {
                            (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), MUL);
    ;}
     break;
 
   case 52:
-#line 529 "Acse.y"
+#line 539 "Acse.y"
     {
                            (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), DIV);
    ;}
     break;
 
   case 53:
-#line 532 "Acse.y"
+#line 542 "Acse.y"
     {
                         (yyval.expr) = handle_binary_comparison (program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), _LT_);
    ;}
     break;
 
   case 54:
-#line 535 "Acse.y"
+#line 545 "Acse.y"
     {
                         (yyval.expr) = handle_binary_comparison (program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), _GT_);
    ;}
     break;
 
   case 55:
-#line 538 "Acse.y"
+#line 548 "Acse.y"
     {
                         (yyval.expr) = handle_binary_comparison (program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), _EQ_);
    ;}
     break;
 
   case 56:
-#line 541 "Acse.y"
+#line 551 "Acse.y"
     {
                         (yyval.expr) = handle_binary_comparison (program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), _NOTEQ_);
    ;}
     break;
 
   case 57:
-#line 544 "Acse.y"
+#line 554 "Acse.y"
     {
                         (yyval.expr) = handle_binary_comparison (program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), _LTEQ_);
    ;}
     break;
 
   case 58:
-#line 547 "Acse.y"
+#line 557 "Acse.y"
     {
                         (yyval.expr) = handle_binary_comparison (program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), _GTEQ_);
    ;}
     break;
 
   case 59:
-#line 550 "Acse.y"
+#line 560 "Acse.y"
     {  (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), SHL); ;}
     break;
 
   case 60:
-#line 551 "Acse.y"
+#line 561 "Acse.y"
     {  (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), SHR); ;}
     break;
 
   case 61:
-#line 552 "Acse.y"
+#line 562 "Acse.y"
     {  (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), ANDL); ;}
     break;
 
   case 62:
-#line 553 "Acse.y"
+#line 563 "Acse.y"
     {  (yyval.expr) = handle_bin_numeric_op(program, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr), ORL); ;}
     break;
 
   case 63:
-#line 554 "Acse.y"
+#line 564 "Acse.y"
     { (yyval.expr) = (yyvsp[(2) - (3)].expr); ;}
     break;
 
   case 64:
-#line 555 "Acse.y"
+#line 565 "Acse.y"
     {
                         if ((yyvsp[(2) - (2)].expr).expression_type == IMMEDIATE)
                         {
@@ -2246,7 +2256,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2250 "Acse.tab.c"
+#line 2260 "Acse.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2460,7 +2470,7 @@ yyreturn:
 }
 
 
-#line 575 "Acse.y"
+#line 585 "Acse.y"
 
 /*=========================================================================
                                   MAIN

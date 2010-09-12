@@ -509,7 +509,17 @@ exp: NUMBER      { $$ = create_expression ($1, IMMEDIATE); }
                            free($2);
    }
    | IDENTIFIER ASSIGN exp {
-                           $$ = create_expression($3.value, REGISTER);
+	     				  int location;
+					      t_axe_instruction *instr;
+					      location = get_symbol_location(program, $1, 0);
+
+					      if ($3.expression_type == IMMEDIATE)
+					         gen_addi_instruction(program, location, REG_0, $3.value);
+					      else
+						     gen_add_instruction(program, location, REG_0, $3.value, CG_DIRECT_ALL);
+
+					      free($1);
+                          $$ = create_expression($3.value, REGISTER);
    }
    | exp AND_OP exp     {
                            $$ = handle_bin_numeric_op(program, $1, $3, ANDB);
