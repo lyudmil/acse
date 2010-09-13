@@ -271,11 +271,12 @@ assign_statement : IDENTIFIER LSQUARE exp RSQUARE ASSIGN exp
 
                if ($3.expression_type == IMMEDIATE) {
 					gen_addi_instruction(program, location, REG_0, $3.value);
+					$$ = create_expression($3.value, IMMEDIATE);
 			   }
                else {
 			        gen_add_instruction(program, location, REG_0, $3.value, CG_DIRECT_ALL);
+					$$ = create_expression($3.value, REGISTER);
 			   }
-			   $$ = create_expression($3.value, IMMEDIATE);
 			   free($1);
             }
 ;
