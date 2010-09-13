@@ -100,6 +100,14 @@ t_while_statement create_while_statement()
    return statement;
 }
 
+t_unless_statement create_unless_statement() {
+	t_unless_statement statement;
+	statement.code_block = NULL;
+	statement.condition = NULL;
+	statement.end = NULL;
+	return statement;
+}
+
 t_axe_label * alloc_label(int value)
 {
    t_axe_label *result;

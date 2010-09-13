@@ -116,7 +116,7 @@ typedef struct t_while_statement
 
 typedef struct t_unless_statement
 {
-	t_axe_label * start;
+	t_axe_label * code_block;
 	t_axe_label * condition;
 	t_axe_label * end;
 } t_unless_statement;
@@ -129,6 +129,8 @@ extern t_axe_expression create_expression (int value, int type);
 
 /* create an instance that will mantain infos about a while statement */
 extern t_while_statement create_while_statement();
+
+extern t_unless_statement create_unless_statement();
 
 /* create an instance of `t_axe_register' */
 extern t_axe_register * alloc_register(int ID, int indirect);
