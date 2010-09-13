@@ -297,18 +297,14 @@ assign_statement : IDENTIFIER LSQUARE exp RSQUARE ASSIGN exp
 
                /* update the value of location */
                if ($3.expression_type == IMMEDIATE) {
-					instr = gen_addi_instruction
-	                     (program, location, REG_0, $3.value);
+					gen_addi_instruction(program, location, REG_0, $3.value);
 					$$ = create_expression($3.value, IMMEDIATE);
 			   }
                else {
-			        instr = gen_add_instruction
-	                        (program, location, REG_0, $3.value, CG_DIRECT_ALL);
-
-	               /* free the memory associated with the IDENTIFIER */
-	               free($1);
-				   $$ = create_expression($3.value, REGISTER);
+			        gen_add_instruction(program, location, REG_0, $3.value, CG_DIRECT_ALL);
+					$$ = create_expression($3.value, REGISTER);
 			   }
+			   free($1);
             }
 ;
             
@@ -514,9 +510,7 @@ exp: NUMBER      { $$ = create_expression ($1, IMMEDIATE); }
                            /* free the memory associated with the IDENTIFIER */
                            free($2);
    }
-   | assign_statement {
-                          $$ = create_expression($1.value, REGISTER);
-   }
+   | assign_statement {}
    | exp AND_OP exp     {
                            $$ = handle_bin_numeric_op(program, $1, $3, ANDB);
    }

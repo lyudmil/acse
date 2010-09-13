@@ -1,6 +1,7 @@
-int a, b, c;
-a = b = c = 2;
+int a, b, c, d;
+a = b = c = d = 2;
 
 write(a);
 write(b);
 write(c);
+write(d);
