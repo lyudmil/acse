@@ -132,6 +132,7 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
 %token <intval> NUMBER
 
 %type <expr> exp
+%type <expr> assign_statement
 %type <decl> declaration
 %type <list> declaration_list
 %type <label> if_stmt
@@ -273,6 +274,7 @@ assign_statement : IDENTIFIER LSQUARE exp RSQUARE ASSIGN exp
                 * The value of IDENTIFIER is a string created
                 * by a call to the function `strdup' (see Acse.lex) */
                free($1);
+			   $$ = create_expression($6.value, REGISTER);
             }
             | IDENTIFIER ASSIGN exp
             {
@@ -294,15 +296,19 @@ assign_statement : IDENTIFIER LSQUARE exp RSQUARE ASSIGN exp
                location = get_symbol_location(program, $1, 0);
 
                /* update the value of location */
-               if ($3.expression_type == IMMEDIATE)
-                  instr = gen_addi_instruction
-                     (program, location, REG_0, $3.value);
-               else
-                  instr = gen_add_instruction
-                        (program, location, REG_0, $3.value, CG_DIRECT_ALL);
+               if ($3.expression_type == IMMEDIATE) {
+					instr = gen_addi_instruction
+	                     (program, location, REG_0, $3.value);
+					$$ = create_expression($3.value, IMMEDIATE);
+			   }
+               else {
+			        instr = gen_add_instruction
+	                        (program, location, REG_0, $3.value, CG_DIRECT_ALL);
 
-               /* free the memory associated with the IDENTIFIER */
-               free($1);
+	               /* free the memory associated with the IDENTIFIER */
+	               free($1);
+				   $$ = create_expression($3.value, REGISTER);
+			   }
             }
 ;
             
@@ -508,18 +514,8 @@ exp: NUMBER      { $$ = create_expression ($1, IMMEDIATE); }
                            /* free the memory associated with the IDENTIFIER */
                            free($2);
    }
-   | IDENTIFIER ASSIGN exp {
-	     				  int location;
-					      t_axe_instruction *instr;
-					      location = get_symbol_location(program, $1, 0);
-
-					      if ($3.expression_type == IMMEDIATE)
-					         gen_addi_instruction(program, location, REG_0, $3.value);
-					      else
-						     gen_add_instruction(program, location, REG_0, $3.value, CG_DIRECT_ALL);
-
-					      free($1);
-                          $$ = create_expression($3.value, REGISTER);
+   | assign_statement {
+                          $$ = create_expression($1.value, REGISTER);
    }
    | exp AND_OP exp     {
                            $$ = handle_bin_numeric_op(program, $1, $3, ANDB);

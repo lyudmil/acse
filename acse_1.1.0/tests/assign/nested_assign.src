@@ -1,0 +1,6 @@
+int a, b, c;
+a = b = c = 2;
+
+write(a);
+write(b);
+write(c);
