@@ -130,12 +130,15 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
 %token <intval> TYPE
 %token <svalue> IDENTIFIER
 %token <intval> NUMBER
+%token <label> EVAL
+%token <label> UNLESS
 
 %type <expr> exp
 %type <expr> assign_statement
 %type <decl> declaration
 %type <list> declaration_list
 %type <label> if_stmt
+%type <label> unless_stmt
 
 /*=========================================================================
                           OPERATOR PRECEDENCES
@@ -249,6 +252,7 @@ statement   : assign_statement SEMI      { /* does nothing */ }
 ;
 
 control_statement : if_statement         { /* does nothing */ }
+			| unless_stmt
             | while_statement            { /* does nothing */ }
             | do_while_statement SEMI    { /* does nothing */ }
             | return_statement SEMI      { /* does nothing */ }
@@ -323,6 +327,14 @@ if_stmt  :  IF
                      gen_beq_instruction (program, $1, 0);
                }
                code_block { $$ = $1; }
+;
+
+unless_stmt : EVAL {
+			} 
+			code_block {
+			}
+			UNLESS exp {
+			}
 ;
 
 while_statement  : WHILE

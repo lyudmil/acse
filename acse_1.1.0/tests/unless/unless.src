@@ -1,0 +1,11 @@
+int x, y;
+read(x);
+read(y);
+
+eval {
+	write(10);
+} unless x==y;
+
+eval {
+	write(20);
+} unless x!=y;
