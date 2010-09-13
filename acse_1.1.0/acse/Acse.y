@@ -131,7 +131,7 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
 %token <intval> TYPE
 %token <svalue> IDENTIFIER
 %token <intval> NUMBER
-%token <label> EVAL
+%token <unless_stmt> EVAL
 %token <label> UNLESS
 
 %type <expr> exp
@@ -139,7 +139,7 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
 %type <decl> declaration
 %type <list> declaration_list
 %type <label> if_stmt
-%type <unless_stmt> unless_stmt
+%type <label> unless_statement
 
 /*=========================================================================
                           OPERATOR PRECEDENCES
@@ -253,7 +253,7 @@ statement   : assign_statement SEMI      { /* does nothing */ }
 ;
 
 control_statement : if_statement         { /* does nothing */ }
-			| unless_stmt
+			| unless_statement
             | while_statement            { /* does nothing */ }
             | do_while_statement SEMI    { /* does nothing */ }
             | return_statement SEMI      { /* does nothing */ }
@@ -330,22 +330,27 @@ if_stmt  :  IF
                code_block { $$ = $1; }
 ;
 
-unless_stmt : EVAL {
-				$$ = create_unless_statement();
-				$$.condition = newLabel(program);
-				$$.code_block = newLabel(program);
-				$$.end = newLabel(program);
-				gen_bt_instruction(program, $$.condition, 0);
-				assignLabel(program, $$.code_block);
+unless_statement : EVAL {
+				$1 = create_unless_statement();
+				$1.condition = newLabel(program);
+				$1.code_block = newLabel(program);
+				$1.end = newLabel(program);
+				gen_bt_instruction(program, $1.condition, 0);
+				assignLabel(program, $1.code_block);
 			} 
 			code_block {
-				gen_bt_instruction(program, $$.end, 0);
-				assignLabel(program, $$.condition);
+				gen_bt_instruction(program, $1.end, 0);
+				assignLabel(program, $1.condition);
 			}
 			UNLESS exp {
-				gen_andb_instruction(program, $6.value, $6.value, $6.value, CG_DIRECT_ALL);
-				gen_beq_instruction(program, $$.code_block, 0);
-				assignLabel(program, $$.end);
+				if ($6.expression_type == IMMEDIATE) {
+					gen_load_immediate(program, $6.value);
+				}
+				else {
+					gen_andb_instruction(program, $6.value, $6.value, $6.value, CG_DIRECT_ALL);
+				}
+				gen_beq_instruction(program, $1.code_block, 0);
+				assignLabel(program, $1.end);
 			}
 ;
 
