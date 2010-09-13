@@ -106,6 +106,7 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
    t_list *list;
    t_axe_label *label;
    t_while_statement while_stmt;
+   t_unless_statement unless_stmt;
 } 
 /*=========================================================================
                                TOKENS 
@@ -138,7 +139,7 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
 %type <decl> declaration
 %type <list> declaration_list
 %type <label> if_stmt
-%type <label> unless_stmt
+%type <unless_stmt> unless_stmt
 
 /*=========================================================================
                           OPERATOR PRECEDENCES
