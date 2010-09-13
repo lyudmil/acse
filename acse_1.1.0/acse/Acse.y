@@ -260,50 +260,22 @@ read_write_statement : read_statement  { /* does nothing */ }
 
 assign_statement : IDENTIFIER LSQUARE exp RSQUARE ASSIGN exp
             {
-               /* Notify to `program' that the value $6
-                * have to be assigned to the location
-                * addressed by $1[$3]. Where $1 is obviously
-                * the array/pointer identifier, $3 is an expression
-                * that holds an integer value. That value will be
-                * used as an index for the array $1 */
                storeArrayElement(program, $1, $3, $6);
-
-               /* free the memory associated with the IDENTIFIER.
-                * The use of the free instruction is required
-                * because of the value associated with IDENTIFIER.
-                * The value of IDENTIFIER is a string created
-                * by a call to the function `strdup' (see Acse.lex) */
+			   $$ = create_expression($6.value, IMMEDIATE);
                free($1);
-			   $$ = create_expression($6.value, REGISTER);
             }
             | IDENTIFIER ASSIGN exp
             {
                int location;
-               t_axe_instruction *instr;
-
-               /* in order to assign a value to a variable, we have to
-                * know where the variable is located (i.e. in which register).
-                * the function `get_symbol_location' is used in order
-                * to retrieve the register location assigned to
-                * a given identifier.
-                * A symbol table keeps track of the location of every
-                * declared variable.
-                * `get_symbol_location' perform a query on the symbol table
-                * in order to discover the correct location of
-                * the variable with $1 as identifier */
-               
-               /* get the location of the symbol with the given ID. */
                location = get_symbol_location(program, $1, 0);
 
-               /* update the value of location */
                if ($3.expression_type == IMMEDIATE) {
 					gen_addi_instruction(program, location, REG_0, $3.value);
-					$$ = create_expression($3.value, IMMEDIATE);
 			   }
                else {
 			        gen_add_instruction(program, location, REG_0, $3.value, CG_DIRECT_ALL);
-					$$ = create_expression($3.value, REGISTER);
 			   }
+			   $$ = create_expression($3.value, IMMEDIATE);
 			   free($1);
             }
 ;
