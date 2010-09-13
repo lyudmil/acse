@@ -334,15 +334,15 @@ unless_stmt : EVAL {
 				$1 = create_unless_statement();
 				$1.condition = newLabel(program);
 				$1.code_block = newLabel(program);
-				$1.end = newLabel(program);
 				gen_bt_instruction(program, $1.condition, 0);
 				assignLabel(program, $1.code_block);
 			} 
 			code_block {
+				$1.end = newLabel(program);
 				gen_bt_instruction(program, $1.end, 0);
+				assignLabel(program, $1.condition);
 			}
 			UNLESS exp {
-				assignLabel(program, $1.condition);
 				gen_andb_instruction(program, $6.value, $6.value, $6.value, CG_DIRECT_ALL);
 				gen_beq_instruction(program, $1.code_block, 0);
 				assignLabel(program, $1.end);

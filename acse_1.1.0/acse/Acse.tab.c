@@ -614,7 +614,7 @@ static const yytype_uint16 yyrline[] =
        0,   172,   172,   185,   186,   189,   196,   200,   207,   216,
      225,   238,   239,   243,   244,   249,   250,   251,   252,   255,
      256,   257,   258,   259,   262,   263,   266,   272,   289,   295,
-     294,   314,   320,   313,   333,   341,   333,   353,   362,   352,
+     294,   314,   320,   313,   333,   340,   333,   353,   362,   352,
      389,   388,   410,   417,   437,   456,   457,   470,   483,   488,
      510,   511,   514,   517,   520,   523,   526,   529,   532,   535,
      538,   541,   544,   547,   548,   549,   550,   551,   552
@@ -1915,23 +1915,23 @@ yyreduce:
 				(yyvsp[(1) - (1)].unless_stmt) = create_unless_statement();
 				(yyvsp[(1) - (1)].unless_stmt).condition = newLabel(program);
 				(yyvsp[(1) - (1)].unless_stmt).code_block = newLabel(program);
-				(yyvsp[(1) - (1)].unless_stmt).end = newLabel(program);
 				gen_bt_instruction(program, (yyvsp[(1) - (1)].unless_stmt).condition, 0);
 				assignLabel(program, (yyvsp[(1) - (1)].unless_stmt).code_block);
 			;}
     break;
 
   case 35:
-#line 341 "Acse.y"
+#line 340 "Acse.y"
     {
+				(yyvsp[(1) - (3)].unless_stmt).end = newLabel(program);
 				gen_bt_instruction(program, (yyvsp[(1) - (3)].unless_stmt).end, 0);
+				assignLabel(program, (yyvsp[(1) - (3)].unless_stmt).condition);
 			;}
     break;
 
   case 36:
-#line 344 "Acse.y"
+#line 345 "Acse.y"
     {
-				assignLabel(program, (yyvsp[(1) - (6)].unless_stmt).condition);
 				gen_andb_instruction(program, (yyvsp[(6) - (6)].expr).value, (yyvsp[(6) - (6)].expr).value, (yyvsp[(6) - (6)].expr).value, CG_DIRECT_ALL);
 				gen_beq_instruction(program, (yyvsp[(1) - (6)].unless_stmt).code_block, 0);
 				assignLabel(program, (yyvsp[(1) - (6)].unless_stmt).end);
