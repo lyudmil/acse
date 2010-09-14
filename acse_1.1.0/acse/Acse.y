@@ -425,15 +425,13 @@ foreach_statement : FOR
 			LPAR IDENTIFIER COLON IDENTIFIER RPAR 
 			{
 				int var_location = get_symbol_location(program, $4, 0);
-				int array_location = get_symbol_location(program, $6, 0);
 				t_axe_variable * array_declaration = getVariable(program, $6);
 				
 				int temp_register = getNewRegister(program);
 				gen_subi_instruction(program, temp_register, $1.counter, array_declaration->arraySize);
 				gen_beq_instruction(program, $1.end, 0);
 					
-				int new_value = getNewRegister(program);
-				gen_add_instruction(program, new_value, array_location, $1.counter, CG_DIRECT_ALL);
+				int new_value = loadArrayElement(program, $6, create_expression($1.counter, REGISTER));
 				gen_add_instruction(program, var_location, REG_0, new_value, CG_DIRECT_ALL);
 			}
 			code_block 
