@@ -107,6 +107,7 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
    t_axe_label *label;
    t_while_statement while_stmt;
    t_unless_statement unless_stmt;
+   t_foreach_statement foreach_stmt;
 } 
 /*=========================================================================
                                TOKENS 
@@ -119,7 +120,6 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
 %token ASSIGN LT GT SHL_OP SHR_OP EQ NOTEQ LTEQ GTEQ
 %token ANDAND OROR
 %token COMMA
-%token FOR
 %token RETURN
 %token READ
 %token WRITE
@@ -133,6 +133,7 @@ t_io_infos *file_infos;    /* input and output files used by the compiler */
 %token <intval> NUMBER
 %token <unless_stmt> EVAL
 %token <label> UNLESS
+%token <foreach_stmt> FOR
 
 %type <expr> exp
 %type <expr> assign_statement
@@ -253,9 +254,10 @@ statement   : assign_statement SEMI      { /* does nothing */ }
 ;
 
 control_statement : if_statement         { /* does nothing */ }
-			| unless_statement
+			| unless_statement			 { /* does nothing */ }
             | while_statement            { /* does nothing */ }
             | do_while_statement SEMI    { /* does nothing */ }
+			| foreach_statement			 { /* does nothing */ }
             | return_statement SEMI      { /* does nothing */ }
 ;
 
@@ -411,6 +413,37 @@ do_while_statement  : DO
                            gen_bne_instruction (program, $1, 0);
                      }
 ;
+
+foreach_statement : FOR  
+			{
+				$1.counter = getNewRegister(program);
+				gen_addi_instruction(program, $1.counter, REG_0, 0);
+				$1.iteration = newLabel(program);
+				$1.end = newLabel(program);
+				assignLabel(program, $1.iteration);
+			}
+			LPAR IDENTIFIER COLON IDENTIFIER RPAR 
+			{
+				int var_location = get_symbol_location(program, $4, 0);
+				int array_location = get_symbol_location(program, $6, 0);
+				t_axe_variable * array_declaration = getVariable(program, $6);
+				
+				int temp_register = getNewRegister(program);
+				gen_subi_instruction(program, temp_register, $1.counter, array_declaration->arraySize);
+				gen_beq_instruction(program, $1.end, 0);
+					
+				int new_value = getNewRegister(program);
+				gen_add_instruction(program, new_value, array_location, $1.counter, CG_DIRECT_ALL);
+				gen_add_instruction(program, var_location, REG_0, new_value, CG_DIRECT_ALL);
+			}
+			code_block 
+			{
+				gen_addi_instruction(program, $1.counter, $1.counter, 1);
+				gen_bt_instruction(program, $1.iteration, 0);
+				assignLabel(program, $1.end);
+			}
+;
+
 
 return_statement : RETURN
             {

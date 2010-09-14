@@ -67,19 +67,19 @@
      ANDAND = 283,
      OROR = 284,
      COMMA = 285,
-     FOR = 286,
-     RETURN = 287,
-     READ = 288,
-     WRITE = 289,
-     DO = 290,
-     WHILE = 291,
-     IF = 292,
-     ELSE = 293,
-     TYPE = 294,
-     IDENTIFIER = 295,
-     NUMBER = 296,
-     EVAL = 297,
-     UNLESS = 298,
+     RETURN = 286,
+     READ = 287,
+     WRITE = 288,
+     DO = 289,
+     WHILE = 290,
+     IF = 291,
+     ELSE = 292,
+     TYPE = 293,
+     IDENTIFIER = 294,
+     NUMBER = 295,
+     EVAL = 296,
+     UNLESS = 297,
+     FOR = 298,
      NOT = 299
    };
 #endif
@@ -112,19 +112,19 @@
 #define ANDAND 283
 #define OROR 284
 #define COMMA 285
-#define FOR 286
-#define RETURN 287
-#define READ 288
-#define WRITE 289
-#define DO 290
-#define WHILE 291
-#define IF 292
-#define ELSE 293
-#define TYPE 294
-#define IDENTIFIER 295
-#define NUMBER 296
-#define EVAL 297
-#define UNLESS 298
+#define RETURN 286
+#define READ 287
+#define WRITE 288
+#define DO 289
+#define WHILE 290
+#define IF 291
+#define ELSE 292
+#define TYPE 293
+#define IDENTIFIER 294
+#define NUMBER 295
+#define EVAL 296
+#define UNLESS 297
+#define FOR 298
 #define NOT 299
 
 
@@ -142,9 +142,10 @@ typedef union YYSTYPE
    t_axe_label *label;
    t_while_statement while_stmt;
    t_unless_statement unless_stmt;
+   t_foreach_statement foreach_stmt;
 }
 /* Line 1529 of yacc.c.  */
-#line 148 "Acse.tab.h"
+#line 149 "Acse.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
