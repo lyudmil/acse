@@ -433,6 +433,8 @@ foreach_statement : FOR
 					
 				int new_value = loadArrayElement(program, $6, create_expression($1.counter, REGISTER));
 				gen_add_instruction(program, var_location, REG_0, new_value, CG_DIRECT_ALL);
+				free($4);
+				free($6);
 			}
 			code_block 
 			{
